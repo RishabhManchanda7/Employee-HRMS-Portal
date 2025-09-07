@@ -1,0 +1,33 @@
+@startuml Attendance Class
+
+class Attendance {
+    - attendanceId: String
+    - employeeId: String
+    - date: Date
+    - checkInTime: Time
+    - checkOutTime: Time
+    - totalHours: Double
+    - status: AttendanceStatus
+    - notes: String
+    + getAttendanceId(): String
+    + getEmployeeId(): String
+    + getDate(): Date
+    + getTotalHours(): Double
+    + calculateHours(): Double
+    + markCheckIn(): void
+    + markCheckOut(): void
+    + getAttendanceStatus(): AttendanceStatus
+    + addNotes(notes: String): void
+}
+
+enum AttendanceStatus {
+    PRESENT
+    ABSENT
+    LATE
+    HALF_DAY
+    ON_LEAVE
+}
+
+Attendance ||--|| AttendanceStatus : uses
+
+@enduml

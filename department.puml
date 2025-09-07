@@ -1,0 +1,22 @@
+@startuml Department Class
+
+class Department {
+    - departmentId: String
+    - departmentName: String
+    - managerId: String
+    - budget: Double
+    - location: String
+    - description: String
+    - employeeCount: int
+    + getDepartmentId(): String
+    + getDepartmentName(): String
+    + getManagerId(): String
+    + getBudget(): Double
+    + addEmployee(employeeId: String): void
+    + removeEmployee(employeeId: String): void
+    + getEmployeeCount(): int
+    + updateBudget(newBudget: Double): void
+    + getDepartmentInfo(): String
+}
+
+@enduml
