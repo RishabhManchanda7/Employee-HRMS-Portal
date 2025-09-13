@@ -1,0 +1,64 @@
+@startuml ERD
+!theme plain
+skinparam linetype ortho
+
+entity "DepartmentDynamo" as dept {
+  * id : String (PK)
+  --
+  departmentCode : String
+  name : String
+  location : String
+  createdAt : String
+  updatedAt : String
+}
+
+entity "EmployeeDynamo" as emp {
+  * id : String (PK)
+  --
+  employeeCode : String
+  firstName : String
+  lastName : String
+  email : String
+  salary : BigDecimal
+  joinDate : String
+  departmentId : String (FK)
+  createdAt : String
+  updatedAt : String
+}
+
+entity "PayrollDynamo" as payroll {
+  * id : String (PK)
+  --
+  payrollCode : String
+  payPeriod : String
+  baseSalary : BigDecimal
+  overtimePay : BigDecimal
+  bonuses : BigDecimal
+  deductions : BigDecimal
+  netPay : BigDecimal
+  payDate : String
+  status : String
+  employeeId : String (FK)
+  createdAt : String
+  updatedAt : String
+}
+
+entity "AttendanceDynamo" as attendance {
+  * id : String (PK)
+  --
+  date : String
+  status : String
+  employeeId : String (FK)
+  createdAt : String
+  updatedAt : String
+}
+
+dept ||--o{ emp : "employs"
+emp ||--o{ payroll : "receives"
+emp ||--o{ attendance : "has"
+
+note right of dept : @DynamoDBTable(tableName = "departments")
+note right of emp : @DynamoDBTable(tableName = "employees")
+note right of payroll : @DynamoDBTable(tableName = "payrolls")
+note right of attendance : @DynamoDBTable(tableName = "attendances")
+@enduml

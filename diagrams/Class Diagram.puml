@@ -1,0 +1,50 @@
+@startuml RepositoryLayer_ExactJavaCode
+!theme plain
+
+interface DynamoDBPagingAndSortingRepository<T, ID> {
+  + findAll() : Iterable<T>
+  + findById(ID) : Optional<T>
+  + save(T) : T
+  + saveAll(Iterable<T>) : Iterable<T>
+  + deleteById(ID) : void
+  + delete(T) : void
+  + count() : long
+  + existsById(ID) : boolean
+}
+
+interface DepartmentDynamoRepository {
+  + findByDepartmentCode(String) : Optional<DepartmentDynamo>
+  + findByName(String) : List<DepartmentDynamo>
+  + findByLocation(String) : List<DepartmentDynamo>
+}
+
+interface EmployeeDynamoRepository {
+  + findByEmployeeCode(String) : Optional<EmployeeDynamo>
+  + findByEmail(String) : List<EmployeeDynamo>
+  + findByDepartmentId(String) : List<EmployeeDynamo>
+}
+
+interface PayrollDynamoRepository {
+  + findByPayrollCode(String) : Optional<PayrollDynamo>
+  + findByEmployeeId(String) : List<PayrollDynamo>
+  + findByStatus(String) : List<PayrollDynamo>
+  + findByPayPeriod(String) : List<PayrollDynamo>
+}
+
+interface AttendanceDynamoRepository {
+  + findByEmployeeId(String) : List<AttendanceDynamo>
+  + findByDate(String) : List<AttendanceDynamo>
+  + findByStatus(String) : List<AttendanceDynamo>
+  + findByEmployeeIdAndDate(String, String) : List<AttendanceDynamo>
+}
+
+DynamoDBPagingAndSortingRepository <|-- DepartmentDynamoRepository
+DynamoDBPagingAndSortingRepository <|-- EmployeeDynamoRepository
+DynamoDBPagingAndSortingRepository <|-- PayrollDynamoRepository
+DynamoDBPagingAndSortingRepository <|-- AttendanceDynamoRepository
+
+note right of DepartmentDynamoRepository : @Repository\n@EnableScan
+note right of EmployeeDynamoRepository : @Repository\n@EnableScan
+note right of PayrollDynamoRepository : @Repository\n@EnableScan
+note right of AttendanceDynamoRepository : @Repository\n@EnableScan
+@enduml
