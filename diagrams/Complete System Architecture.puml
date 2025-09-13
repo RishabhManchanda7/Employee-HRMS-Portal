@@ -1,31 +1,73 @@
-@startuml Payroll Class
+@startuml CompleteSystem_ExactJavaCode
+!theme plain
 
-class Payroll {
-    - payrollId: String
-    - employeeId: String
-    - payPeriod: String
-    - baseSalary: Double
-    - overtimePay: Double
-    - bonuses: Double
-    - deductions: Double
-    - netPay: Double
-    - payDate: Date
-    - status: PayrollStatus
-    + calculateGrossPay(): Double
-    + calculateDeductions(): Double
-    + calculateNetPay(): Double
-    + generatePayrollReport(): String
-    + processPayment(): void
-    + getPayrollSummary(): String
+package "Presentation Layer" {
+  class EmployeeController
 }
 
-enum PayrollStatus {
-    PENDING
-    PROCESSED
-    PAID
-    FAILED
+package "Service Layer" {
+  interface EmployeeService
+  class EmployeeDynamoService
+  class DynamoDBTableService
+  class DataLoader
 }
 
-Payroll ||--|| PayrollStatus : uses
+package "Repository Layer" {
+  interface DepartmentDynamoRepository
+  interface EmployeeDynamoRepository
+  interface PayrollDynamoRepository
+  interface AttendanceDynamoRepository
+}
+
+package "Entity Layer" {
+  abstract class BaseEntity
+  class DepartmentDynamo
+  class EmployeeDynamo
+  class PayrollDynamo
+  class AttendanceDynamo
+}
+
+package "Configuration" {
+  class DynamoDBConfig
+}
+
+package "DynamoDB" {
+  class departments
+  class employees
+  class payrolls
+  class attendances
+}
+
+' Relationships
+EmployeeController --> EmployeeService
+EmployeeService <|.. EmployeeDynamoService
+EmployeeDynamoService --> EmployeeDynamoRepository
+DataLoader --> DepartmentDynamoRepository
+DataLoader --> EmployeeService
+DataLoader --> DynamoDBTableService
+
+EmployeeDynamoRepository --> EmployeeDynamo
+DepartmentDynamoRepository --> DepartmentDynamo
+PayrollDynamoRepository --> PayrollDynamo
+AttendanceDynamoRepository --> AttendanceDynamo
+
+BaseEntity <|-- EmployeeDynamo
+BaseEntity <|-- DepartmentDynamo
+BaseEntity <|-- PayrollDynamo
+BaseEntity <|-- AttendanceDynamo
+
+EmployeeDynamoRepository --> departments
+DepartmentDynamoRepository --> departments
+PayrollDynamoRepository --> payrolls
+AttendanceDynamoRepository --> attendances
+
+DynamoDBConfig --> employees
+DynamoDBConfig --> departments
+DynamoDBConfig --> payrolls
+DynamoDBConfig --> attendances
+
+note right of EmployeeController : @RestController\n@RequestMapping("/api/employees")
+note right of EmployeeDynamoService : @Service
+note right of DynamoDBConfig : @Configuration\n@EnableDynamoDBRepositories
 
 @enduml

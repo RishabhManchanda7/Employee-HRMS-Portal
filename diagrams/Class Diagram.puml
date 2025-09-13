@@ -1,118 +1,50 @@
-@startuml Complete Employee Management System - Fixed
+@startuml RepositoryLayer_ExactJavaCode
+!theme plain
 
-class Employee {
-    - employeeId: String
-    - firstName: String
-    - lastName: String
-    - email: String
-    - phoneNumber: String
-    - hireDate: Date
-    - salary: Double
-    - position: String
-    - status: EmployeeStatus
-    - departmentId: String
-    + getEmployeeId(): String
-    + getFullName(): String
-    + getEmail(): String
-    + getSalary(): Double
-    + updateSalary(newSalary: Double): void
-    + changeDepartment(departmentId: String): void
-    + getEmployeeInfo(): String
-    + setStatus(status: EmployeeStatus): void
+interface DynamoDBPagingAndSortingRepository<T, ID> {
+  + findAll() : Iterable<T>
+  + findById(ID) : Optional<T>
+  + save(T) : T
+  + saveAll(Iterable<T>) : Iterable<T>
+  + deleteById(ID) : void
+  + delete(T) : void
+  + count() : long
+  + existsById(ID) : boolean
 }
 
-class Department {
-    - departmentId: String
-    - departmentName: String
-    - managerId: String
-    - budget: Double
-    - location: String
-    - description: String
-    - employeeCount: int
-    + getDepartmentId(): String
-    + getDepartmentName(): String
-    + getManagerId(): String
-    + getBudget(): Double
-    + addEmployee(employeeId: String): void
-    + removeEmployee(employeeId: String): void
-    + getEmployeeCount(): int
-    + updateBudget(newBudget: Double): void
-    + getDepartmentInfo(): String
+interface DepartmentDynamoRepository {
+  + findByDepartmentCode(String) : Optional<DepartmentDynamo>
+  + findByName(String) : List<DepartmentDynamo>
+  + findByLocation(String) : List<DepartmentDynamo>
 }
 
-class Payroll {
-    - payrollId: String
-    - employeeId: String
-    - payPeriod: String
-    - baseSalary: Double
-    - overtimePay: Double
-    - bonuses: Double
-    - deductions: Double
-    - netPay: Double
-    - payDate: Date
-    - status: PayrollStatus
-    + calculateGrossPay(): Double
-    + calculateDeductions(): Double
-    + calculateNetPay(): Double
-    + generatePayrollReport(): String
-    + processPayment(): void
-    + getPayrollSummary(): String
+interface EmployeeDynamoRepository {
+  + findByEmployeeCode(String) : Optional<EmployeeDynamo>
+  + findByEmail(String) : List<EmployeeDynamo>
+  + findByDepartmentId(String) : List<EmployeeDynamo>
 }
 
-class Attendance {
-    - attendanceId: String
-    - employeeId: String
-    - date: Date
-    - checkInTime: Time
-    - checkOutTime: Time
-    - totalHours: Double
-    - status: AttendanceStatus
-    - notes: String
-    + getAttendanceId(): String
-    + getEmployeeId(): String
-    + getDate(): Date
-    + getTotalHours(): Double
-    + calculateHours(): Double
-    + markCheckIn(): void
-    + markCheckOut(): void
-    + getAttendanceStatus(): AttendanceStatus
-    + addNotes(notes: String): void
+interface PayrollDynamoRepository {
+  + findByPayrollCode(String) : Optional<PayrollDynamo>
+  + findByEmployeeId(String) : List<PayrollDynamo>
+  + findByStatus(String) : List<PayrollDynamo>
+  + findByPayPeriod(String) : List<PayrollDynamo>
 }
 
-enum EmployeeStatus {
-    ACTIVE
-    INACTIVE
-    ON_LEAVE
-    TERMINATED
+interface AttendanceDynamoRepository {
+  + findByEmployeeId(String) : List<AttendanceDynamo>
+  + findByDate(String) : List<AttendanceDynamo>
+  + findByStatus(String) : List<AttendanceDynamo>
+  + findByEmployeeIdAndDate(String, String) : List<AttendanceDynamo>
 }
 
-enum PayrollStatus {
-    PENDING
-    PROCESSED
-    PAID
-    FAILED
-}
+DynamoDBPagingAndSortingRepository <|-- DepartmentDynamoRepository
+DynamoDBPagingAndSortingRepository <|-- EmployeeDynamoRepository
+DynamoDBPagingAndSortingRepository <|-- PayrollDynamoRepository
+DynamoDBPagingAndSortingRepository <|-- AttendanceDynamoRepository
 
-enum AttendanceStatus {
-    PRESENT
-    ABSENT
-    LATE
-    HALF_DAY
-    ON_LEAVE
-}
-
-' Fixed Relationships
-Employee }o--|| Department : "belongs to"
-Department ||--o{ Employee : "manages"
-Employee ||--o{ Payroll : "has"
-Payroll }o--|| Employee : "for"
-Employee ||--o{ Attendance : "has"
-Attendance }o--|| Employee : "belongs to"
-Employee ||--|| EmployeeStatus : uses
-Payroll ||--|| PayrollStatus : uses
-Attendance ||--|| AttendanceStatus : uses
-
-' Self-referencing relationship for manager-subordinate
-Employee ||--o| Employee : "manages"
-
+note right of DepartmentDynamoRepository : @Repository\n@EnableScan
+note right of EmployeeDynamoRepository : @Repository\n@EnableScan
+note right of PayrollDynamoRepository : @Repository\n@EnableScan
+note right of AttendanceDynamoRepository : @Repository\n@EnableScan
 @enduml

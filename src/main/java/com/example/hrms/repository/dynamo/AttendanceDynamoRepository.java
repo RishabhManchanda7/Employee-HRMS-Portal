@@ -11,7 +11,7 @@ import java.util.List;
 @EnableScan
 public interface AttendanceDynamoRepository extends DynamoDBPagingAndSortingRepository<AttendanceDynamo, String> {
     
-    // Find by employee ID
+ne
     List<AttendanceDynamo> findByEmployeeId(String employeeId);
     
     // Find by date
