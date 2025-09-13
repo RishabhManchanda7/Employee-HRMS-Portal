@@ -1,4 +1,4 @@
-@startuml ERD
+@startuml ERD_ExactJavaCode
 !theme plain
 skinparam linetype ortho
 
