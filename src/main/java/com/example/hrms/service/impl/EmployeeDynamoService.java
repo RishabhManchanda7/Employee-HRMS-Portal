@@ -49,4 +49,9 @@ public class EmployeeDynamoService implements EmployeeService {
         employeeRepo.deleteById(id);
     }
 
+    @Override
+    public EmployeeDynamo findByEmployeeCode(String empCode) {
+        return employeeRepo.findByEmployeeCode(empCode).orElse(null);
+    }
+
 }

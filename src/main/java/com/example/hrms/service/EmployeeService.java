@@ -9,4 +9,6 @@ public interface EmployeeService {
     EmployeeDynamo create(EmployeeDynamo employee);
     EmployeeDynamo update(String id, EmployeeDynamo employee);
     void delete(String id);
+
+    EmployeeDynamo findByEmployeeCode(String empCode);
 }
