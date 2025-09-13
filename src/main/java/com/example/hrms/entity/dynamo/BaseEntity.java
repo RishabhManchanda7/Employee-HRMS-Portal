@@ -8,7 +8,6 @@ import java.time.Instant;
 
 public abstract class BaseEntity {
     
-    @DynamoDBHashKey
     private String id;
     
     @DynamoDBAttribute

@@ -7,6 +7,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "attendances")
 public class AttendanceDynamo extends BaseEntity {
     
+    @DynamoDBHashKey
+    private String id;
+    
     @DynamoDBAttribute
     private String date;
     
@@ -27,12 +30,8 @@ public class AttendanceDynamo extends BaseEntity {
     }
 
     // Getters and Setters
-    @DynamoDBHashKey
-    @Override
-    public String getId() { return super.getId(); }
-    
-    @Override
-    public void setId(String id) { super.setId(id); }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }

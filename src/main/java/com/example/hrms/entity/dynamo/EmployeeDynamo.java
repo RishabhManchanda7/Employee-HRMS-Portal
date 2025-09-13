@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 @DynamoDBTable(tableName = "employees")
 public class EmployeeDynamo extends BaseEntity {
     
+    @DynamoDBHashKey
+    private String id;
+    
     @DynamoDBAttribute
     private String employeeCode;
     
@@ -43,12 +46,8 @@ public class EmployeeDynamo extends BaseEntity {
     }
 
     // Getters and Setters
-    @DynamoDBHashKey
-    @Override
-    public String getId() { return super.getId(); }
-    
-    @Override
-    public void setId(String id) { super.setId(id); }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getEmployeeCode() { return employeeCode; }
     public void setEmployeeCode(String employeeCode) { 

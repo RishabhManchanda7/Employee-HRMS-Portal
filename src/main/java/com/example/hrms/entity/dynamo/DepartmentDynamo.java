@@ -7,6 +7,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "departments")
 public class DepartmentDynamo extends BaseEntity {
     
+    @DynamoDBHashKey
+    private String id;
+    
     @DynamoDBAttribute
     private String departmentCode;
     
@@ -28,12 +31,8 @@ public class DepartmentDynamo extends BaseEntity {
     }
 
     // Getters and Setters
-    @DynamoDBHashKey
-    @Override
-    public String getId() { return super.getId(); }
-    
-    @Override
-    public void setId(String id) { super.setId(id); }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getDepartmentCode() { return departmentCode; }
     public void setDepartmentCode(String departmentCode) { 
