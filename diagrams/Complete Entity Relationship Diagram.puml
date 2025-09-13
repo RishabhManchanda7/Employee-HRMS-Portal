@@ -1,0 +1,70 @@
+@startuml CompleteHRMS_ERD
+!theme plain
+skinparam linetype ortho
+skinparam backgroundColor #F8F9FA
+
+title Complete HRMS System - Entity Relationship Diagram (DynamoDB)
+
+entity "DepartmentDynamo" as dept {
+  * id : String (PK)
+  --
+  departmentCode : String (Unique)
+  name : String
+  location : String
+  createdAt : String
+  updatedAt : String
+}
+
+entity "EmployeeDynamo" as emp {
+  * id : String (PK)
+  --
+  employeeCode : String (Unique)
+  firstName : String
+  lastName : String
+  email : String (Unique)
+  salary : BigDecimal
+  joinDate : String
+  departmentId : String (FK)
+  createdAt : String
+  updatedAt : String
+}
+
+entity "PayrollDynamo" as payroll {
+  * id : String (PK)
+  --
+  payrollCode : String (Unique)
+  payPeriod : String
+  baseSalary : BigDecimal
+  overtimePay : BigDecimal
+  bonuses : BigDecimal
+  deductions : BigDecimal
+  netPay : BigDecimal
+  payDate : String
+  status : String
+  employeeId : String (FK)
+  createdAt : String
+  updatedAt : String
+}
+
+entity "AttendanceDynamo" as attendance {
+  * id : String (PK)
+  --
+  date : String
+  status : String (P/A/L)
+  employeeId : String (FK)
+  createdAt : String
+  updatedAt : String
+}
+
+' Relationships
+dept ||--o{ emp : "employs"
+emp ||--o{ payroll : "receives"
+emp ||--o{ attendance : "has"
+
+' Notes
+note right of dept : @DynamoDBTable(tableName = "departments")\n@DynamoDBHashKey on id
+note right of emp : @DynamoDBTable(tableName = "employees")\n@DynamoDBHashKey on id
+note right of payroll : @DynamoDBTable(tableName = "payrolls")\n@DynamoDBHashKey on id
+note right of attendance : @DynamoDBTable(tableName = "attendances")\n@DynamoDBHashKey on id
+
+@enduml
