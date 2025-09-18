@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 @EnableScan
 public interface AttendanceDynamoRepository extends DynamoDBPagingAndSortingRepository<AttendanceDynamo, String> {
-    
-ne
+
+
     List<AttendanceDynamo> findByEmployeeId(String employeeId);
     
     // Find by date

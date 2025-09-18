@@ -19,9 +19,7 @@ public class SalaryController {
     @Autowired
     private SalaryComputationService salaryService;
     
-    /**
-     * Get salary summary for a specific employee by employee code
-     */
+
     @GetMapping("/employee/{employeeCode}")
     public ResponseEntity<EmployeeSalarySummary> getEmployeeSalarySummary(@PathVariable String employeeCode) {
         try {
@@ -32,9 +30,7 @@ public class SalaryController {
         }
     }
     
-    /**
-     * Get salary summary for a specific employee by employee ID
-     */
+
     @GetMapping("/employee/id/{employeeId}")
     public ResponseEntity<EmployeeSalarySummary> getEmployeeSalarySummaryById(@PathVariable String employeeId) {
         try {

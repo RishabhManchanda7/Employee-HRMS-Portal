@@ -3,10 +3,12 @@ package com.example.hrms;
 import com.example.hrms.entity.dynamo.DepartmentDynamo;
 import com.example.hrms.entity.dynamo.EmployeeDynamo;
 import com.example.hrms.entity.dynamo.PayrollDynamo;
+import com.example.hrms.entity.dynamo.AttendanceDynamo;
 import com.example.hrms.repository.dynamo.DepartmentDynamoRepository;
 import com.example.hrms.repository.dynamo.PayrollDynamoRepository;
 import com.example.hrms.service.DynamoDBTableService;
 import com.example.hrms.service.EmployeeService;
+import com.example.hrms.service.AttendanceService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -21,13 +23,15 @@ public class DataLoader implements CommandLineRunner {
     private final EmployeeService employeeService;
     private final DynamoDBTableService tableService;
     private final PayrollDynamoRepository payrollRepo;
+    private final AttendanceService attendanceService;
     
 
-    public DataLoader(DepartmentDynamoRepository deptRepo, EmployeeService employeeService, DynamoDBTableService tableService, PayrollDynamoRepository payrollRepo) {
+    public DataLoader(DepartmentDynamoRepository deptRepo, EmployeeService employeeService, DynamoDBTableService tableService, PayrollDynamoRepository payrollRepo, AttendanceService attendanceService) {
         this.deptRepo = deptRepo;
         this.employeeService = employeeService;
         this.tableService = tableService;
         this.payrollRepo = payrollRepo;
+        this.attendanceService = attendanceService;
     }
 
     @Override
@@ -59,6 +63,16 @@ public class DataLoader implements CommandLineRunner {
         createPayrollRecord("EMP006", "2024-01", new BigDecimal("7000"), new BigDecimal("3000"), new BigDecimal("1500"));
         createPayrollRecord("EMP007", "2024-01", new BigDecimal("8000"), new BigDecimal("4000"), new BigDecimal("2000"));
         createPayrollRecord("EMP008", "2024-01", new BigDecimal("1500"), new BigDecimal("300"), new BigDecimal("200"));
+
+        // Create simple attendance samples (P=Present, A=Absent, L=Leave)
+        seedAttendance("EMP001");
+        seedAttendance("EMP002");
+        seedAttendance("EMP003");
+        seedAttendance("EMP004");
+        seedAttendance("EMP005");
+        seedAttendance("EMP006");
+        seedAttendance("EMP007");
+        seedAttendance("EMP008");
 
     }
 
@@ -117,6 +131,26 @@ public class DataLoader implements CommandLineRunner {
         payroll.setTimestamps();
         payrollRepo.save(payroll);
         System.out.println("Created payroll record: " + payrollCode);
+    }
+
+    private void seedAttendance(String empCode) {
+        String today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String yesterday = LocalDate.now().minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String twoDaysAgo = LocalDate.now().minusDays(2).format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+        createAttendance(empCode, twoDaysAgo, "P");
+        createAttendance(empCode, yesterday, "P");
+        createAttendance(empCode, today, "P");
+    }
+
+    private void createAttendance(String empCode, String date, String status) {
+        AttendanceDynamo att = new AttendanceDynamo();
+        att.setEmployeeId(empCode);
+        att.setDate(date);
+        att.setStatus(status);
+        // ID will be set in service if missing: employeeId-date
+        attendanceService.create(att);
+        System.out.println("Created attendance: " + empCode + " " + date + " " + status);
     }
         
 }
