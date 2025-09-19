@@ -4,11 +4,13 @@ import com.example.hrms.entity.dynamo.DepartmentDynamo;
 import com.example.hrms.entity.dynamo.EmployeeDynamo;
 import com.example.hrms.entity.dynamo.PayrollDynamo;
 import com.example.hrms.entity.dynamo.AttendanceDynamo;
+import com.example.hrms.entity.dynamo.LeaveRequestDynamo;
 import com.example.hrms.repository.dynamo.DepartmentDynamoRepository;
 import com.example.hrms.repository.dynamo.PayrollDynamoRepository;
 import com.example.hrms.service.DynamoDBTableService;
 import com.example.hrms.service.EmployeeService;
 import com.example.hrms.service.AttendanceService;
+import com.example.hrms.service.LeaveService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -24,14 +26,16 @@ public class DataLoader implements CommandLineRunner {
     private final DynamoDBTableService tableService;
     private final PayrollDynamoRepository payrollRepo;
     private final AttendanceService attendanceService;
+    private final LeaveService leaveService;
     
 
-    public DataLoader(DepartmentDynamoRepository deptRepo, EmployeeService employeeService, DynamoDBTableService tableService, PayrollDynamoRepository payrollRepo, AttendanceService attendanceService) {
+    public DataLoader(DepartmentDynamoRepository deptRepo, EmployeeService employeeService, DynamoDBTableService tableService, PayrollDynamoRepository payrollRepo, AttendanceService attendanceService, LeaveService leaveService) {
         this.deptRepo = deptRepo;
         this.employeeService = employeeService;
         this.tableService = tableService;
         this.payrollRepo = payrollRepo;
         this.attendanceService = attendanceService;
+        this.leaveService = leaveService;
     }
 
     @Override
@@ -73,6 +77,9 @@ public class DataLoader implements CommandLineRunner {
         seedAttendance("EMP006");
         seedAttendance("EMP007");
         seedAttendance("EMP008");
+
+        // Seed a couple of sample leave requests
+        seedLeaves();
 
     }
 
@@ -151,6 +158,26 @@ public class DataLoader implements CommandLineRunner {
         // ID will be set in service if missing: employeeId-date
         attendanceService.create(att);
         System.out.println("Created attendance: " + empCode + " " + date + " " + status);
+    }
+
+    // Minimal sample leave requests per first two employees
+    private void seedLeaves() {
+        createLeave("EMP001", LocalDate.now().plusDays(3), LocalDate.now().plusDays(4), "SICK", "Fever");
+        createLeave("EMP002", LocalDate.now().plusDays(5), LocalDate.now().plusDays(7), "PTO", "Family trip");
+    }
+
+    private void createLeave(String empId, LocalDate start, LocalDate end, String type, String reason) {
+        LeaveRequestDynamo r = new LeaveRequestDynamo();
+        r.setEmployeeId(empId);
+        r.setStartDate(start.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        r.setEndDate(end.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        r.setType(type);
+        r.setReason(reason);
+        r.setStatus("PENDING");
+        r.setId("LEAVE-" + empId + "-" + r.getStartDate());
+        r.setTimestamps();
+        leaveService.create(r);
+        System.out.println("Created leave request: " + r.getId());
     }
         
 }

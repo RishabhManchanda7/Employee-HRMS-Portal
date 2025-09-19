@@ -8,6 +8,7 @@ public interface AttendanceService {
     List<AttendanceDynamo> getAll();
     AttendanceDynamo getById(String id);
     AttendanceDynamo create(AttendanceDynamo attendance);
+    List<AttendanceDynamo> createBulk(List<AttendanceDynamo> records);
     AttendanceDynamo update(String id, AttendanceDynamo attendance);
     void delete(String id);
 
