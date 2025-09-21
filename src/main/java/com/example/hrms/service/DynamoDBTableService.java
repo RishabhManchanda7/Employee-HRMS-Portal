@@ -18,6 +18,7 @@ public class DynamoDBTableService {
         createTableIfNotExists("departments");
         createTableIfNotExists("payrolls");
         createTableIfNotExists("attendances");
+        createTableIfNotExists("leaves");
     }
 
     private void createTableIfNotExists(String tableName) {

@@ -1,3 +1,4 @@
+
 package com.example.hrms.service.impl;
 
 import com.example.hrms.entity.dynamo.AttendanceDynamo;
@@ -37,6 +38,20 @@ public class AttendanceDynamoService implements AttendanceService {
         }
         attendance.setTimestamps();
         return attendanceRepo.save(attendance);
+    }
+
+    @Override
+    public List<AttendanceDynamo> createBulk(List<AttendanceDynamo> records) {
+        List<AttendanceDynamo> saved = new ArrayList<>();
+        if (records == null) return saved;
+        for (AttendanceDynamo r : records) {
+            if (r.getId() == null || r.getId().isEmpty()) {
+                r.setId(r.getEmployeeId() + "-" + r.getDate());
+            }
+            r.setTimestamps();
+            saved.add(attendanceRepo.save(r));
+        }
+        return saved;
     }
 
     @Override

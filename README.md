@@ -1,6 +1,6 @@
-﻿# Employee HRMS Portal - DynamoDB Migration (Simplified)
+﻿# Employee HRMS Portal - DynamoDB Migration 
 
-This project has been migrated from MySQL/H2 to AWS DynamoDB using a **simplified multi-table approach** that closely mirrors your original MySQL design.
+This project has been migrated from MySQL/H2 to AWS DynamoDB using a ** multi-table approach** that closely mirrors your original MySQL design.
 
 ## Architecture Changes
 
@@ -9,7 +9,7 @@ This project has been migrated from MySQL/H2 to AWS DynamoDB using a **simplifie
 - Traditional relational database with foreign key relationships
 - Multiple tables: employees, departments, payroll, attendance
 
-### After (DynamoDB - Simplified)
+### After (DynamoDB)
 - **Multi-table design** - one DynamoDB table per entity (just like MySQL)
 - Simple primary keys using entity IDs
 - No complex GSI patterns - much easier to understand
@@ -18,7 +18,7 @@ This project has been migrated from MySQL/H2 to AWS DynamoDB using a **simplifie
 ## Key Features
 
 - **Multi-Table Design**: Each entity has its own DynamoDB table (employees, departments, payrolls, attendances)
-- **Simple Primary Keys**: Uses simple `id` field as primary key (just like MySQL)
+- ** Primary Keys**: Uses simple `id` field as primary key (just like MySQL)
 - **No Complex GSI**: No Global Secondary Indexes - much simpler than single-table design
 - **MySQL-like Structure**: Very similar to your original MySQL design
 - **Backward Compatibility**: All existing REST API endpoints work unchanged
@@ -137,7 +137,7 @@ aws.secret.key=YOUR_SECRET_KEY
 3. **Cost-Effective**: Pay-per-request pricing model
 4. **No Maintenance**: Fully managed service
 5. **High Availability**: Built-in replication across multiple AZs
-6. **Simple Structure**: Multi-table design is much easier to understand than single-table patterns
+6. ** Structure**: Multi-table design is much easier to understand than single-table patterns
 7. **MySQL-like**: Very similar to your original MySQL structure
 
 ## Code Structure
@@ -184,4 +184,6 @@ The application maintains full backward compatibility. All existing tests should
 - Implement batch operations for better performance
 - Add DynamoDB Streams for real-time data processing
 - Implement caching layer for frequently accessed data
+
+
 

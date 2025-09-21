@@ -35,6 +35,11 @@ public class AttendanceController {
         return service.create(a);
     }
 
+    @PostMapping("/bulk")
+    public List<AttendanceDynamo> createBulk(@RequestBody List<AttendanceDynamo> list) {
+        return service.createBulk(list);
+    }
+
     @PutMapping("/{id}")
     public AttendanceDynamo update(@PathVariable String id, @RequestBody AttendanceDynamo a) {
         return service.update(id, a);
