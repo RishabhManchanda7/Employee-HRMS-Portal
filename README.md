@@ -1,4 +1,4 @@
-﻿# Employee HRMS Portal - DynamoDB Migration (Simplified)
+﻿# Employee HRMS Portal - DynamoDB Migration 
 
 This project has been migrated from MySQL/H2 to AWS DynamoDB using a **simplified multi-table approach** that closely mirrors your original MySQL design.
 
@@ -184,4 +184,5 @@ The application maintains full backward compatibility. All existing tests should
 - Implement batch operations for better performance
 - Add DynamoDB Streams for real-time data processing
 - Implement caching layer for frequently accessed data
+
 
