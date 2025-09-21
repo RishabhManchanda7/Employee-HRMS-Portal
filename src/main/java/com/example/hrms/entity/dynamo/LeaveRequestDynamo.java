@@ -8,16 +8,15 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 public class LeaveRequestDynamo extends BaseEntity {
 
     @DynamoDBHashKey
-    private String id; // LEAVE-<employeeId>-<startDate>
-
+    private String id; 
     @DynamoDBAttribute
     private String employeeId;
 
     @DynamoDBAttribute
-    private String startDate; // YYYY-MM-DD
+    private String startDate; 
 
     @DynamoDBAttribute
-    private String endDate; // YYYY-MM-DD
+    private String endDate; 
 
     @DynamoDBAttribute
     private String type; // SICK, CASUAL, PTO

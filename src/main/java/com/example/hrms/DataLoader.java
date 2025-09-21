@@ -68,7 +68,7 @@ public class DataLoader implements CommandLineRunner {
         createPayrollRecord("EMP007", "2024-01", new BigDecimal("8000"), new BigDecimal("4000"), new BigDecimal("2000"));
         createPayrollRecord("EMP008", "2024-01", new BigDecimal("1500"), new BigDecimal("300"), new BigDecimal("200"));
 
-        // Create simple attendance samples (P=Present, A=Absent, L=Leave)
+
         seedAttendance("EMP001");
         seedAttendance("EMP002");
         seedAttendance("EMP003");
