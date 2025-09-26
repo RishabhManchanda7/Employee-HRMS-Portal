@@ -1,6 +1,7 @@
 package com.example.hrms.controller;
 
 import com.example.hrms.entity.dynamo.LeaveRequestDynamo;
+import com.example.hrms.entity.dynamo.LeaveStatus;
 import com.example.hrms.service.LeaveService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class LeaveController {
     }
 
     @GetMapping("/status/{status}")
-    public List<LeaveRequestDynamo> byStatus(@PathVariable String status) {
+    public List<LeaveRequestDynamo> byStatus(@PathVariable LeaveStatus status) {
         return service.getByStatus(status);
     }
 

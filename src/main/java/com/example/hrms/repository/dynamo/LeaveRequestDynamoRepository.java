@@ -1,6 +1,7 @@
 package com.example.hrms.repository.dynamo;
 
 import com.example.hrms.entity.dynamo.LeaveRequestDynamo;
+import com.example.hrms.entity.dynamo.LeaveStatus;
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBPagingAndSortingRepository;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,7 @@ import java.util.List;
 @EnableScan
 public interface LeaveRequestDynamoRepository extends DynamoDBPagingAndSortingRepository<LeaveRequestDynamo, String> {
     List<LeaveRequestDynamo> findByEmployeeId(String employeeId);
-    List<LeaveRequestDynamo> findByStatus(String status);
+    List<LeaveRequestDynamo> findByStatus(LeaveStatus status);
 }
 
 

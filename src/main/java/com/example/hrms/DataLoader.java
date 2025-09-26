@@ -5,6 +5,8 @@ import com.example.hrms.entity.dynamo.EmployeeDynamo;
 import com.example.hrms.entity.dynamo.PayrollDynamo;
 import com.example.hrms.entity.dynamo.AttendanceDynamo;
 import com.example.hrms.entity.dynamo.LeaveRequestDynamo;
+import com.example.hrms.entity.dynamo.LeaveType;
+import com.example.hrms.entity.dynamo.LeaveStatus;
 import com.example.hrms.repository.dynamo.DepartmentDynamoRepository;
 import com.example.hrms.repository.dynamo.PayrollDynamoRepository;
 import com.example.hrms.service.DynamoDBTableService;
@@ -42,23 +44,24 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         // Initialize DynamoDB tables
         tableService.createTablesIfNotExist();
-        
-        // Create Departments
+
+
         createDepartment("DEPT-HR", "Human Resources", "Delhi");
         createDepartment("DEPT-IT", "Information Technology", "Bangalore");
         createDepartment("DEPT-FIN", "Finance", "Mumbai");
 
         // Create Employees
-        createEmployee("EMP001", "Rishabh", "Manchanda", "rishabh@example.com", "35000", "DEPT-HR");
-        createEmployee("EMP002", "Priya", "Sharma", "priya.sharma@example.com", "42000", "DEPT-IT");
-        createEmployee("EMP003", "Amit", "Kumar", "amit.kumar@example.com", "38000", "DEPT-IT");
-        createEmployee("EMP004", "Sneha", "Patel", "sneha.patel@example.com", "45000", "DEPT-FIN");
-        createEmployee("EMP005", "Rajesh", "Singh", "rajesh.singh@example.com", "40000", "DEPT-HR");
-        createEmployee("EMP006", "Anita", "Gupta", "anita.gupta@example.com", "48000", "DEPT-IT");
-        createEmployee("EMP007", "Vikram", "Joshi", "vikram.joshi@example.com", "52000", "DEPT-FIN");
-        createEmployee("EMP008", "Deepika", "Reddy", "deepika.reddy@example.com", "39000", "DEPT-HR");
+        createEmployeeIfNotExists("EMP001", "Rishabh", "Manchanda", "rishabh@example.com", "35000", "DEPT-HR");
+        createEmployeeIfNotExists("EMP002", "Priya", "Sharma", "priya.sharma@example.com", "42000", "DEPT-IT");
+        createEmployeeIfNotExists("EMP003", "Amit", "Kumar", "amit.kumar@example.com", "38000", "DEPT-IT");
+        createEmployeeIfNotExists("EMP004", "Sneha", "Patel", "sneha.patel@example.com", "45000", "DEPT-FIN");
+        createEmployeeIfNotExists("EMP005", "Rajesh", "Singh", "rajesh.singh@example.com", "40000", "DEPT-HR");
+        createEmployeeIfNotExists("EMP006", "Anita", "Gupta", "anita.gupta@example.com", "48000", "DEPT-IT");
+        createEmployeeIfNotExists("EMP007", "Vikram", "Joshi", "vikram.joshi@example.com", "52000", "DEPT-FIN");
+        createEmployeeIfNotExists("EMP008", "Deepika", "Reddy", "deepika.reddy@example.com", "39000", "DEPT-HR");
+        createEmployeeIfNotExists("EMP0011", "Deepika", "Reddy", "deepika.reddy22@example.com", "39000", "DEPT-HR");
 
-        // Create sample payroll records
+
         createPayrollRecord("EMP001", "2024-01", new BigDecimal("5000"), new BigDecimal("2000"), new BigDecimal("1000"));
         createPayrollRecord("EMP002", "2024-01", new BigDecimal("3000"), new BigDecimal("1500"), new BigDecimal("800"));
         createPayrollRecord("EMP003", "2024-01", new BigDecimal("4000"), new BigDecimal("1000"), new BigDecimal("600"));
@@ -67,7 +70,6 @@ public class DataLoader implements CommandLineRunner {
         createPayrollRecord("EMP006", "2024-01", new BigDecimal("7000"), new BigDecimal("3000"), new BigDecimal("1500"));
         createPayrollRecord("EMP007", "2024-01", new BigDecimal("8000"), new BigDecimal("4000"), new BigDecimal("2000"));
         createPayrollRecord("EMP008", "2024-01", new BigDecimal("1500"), new BigDecimal("300"), new BigDecimal("200"));
-
 
         seedAttendance("EMP001");
         seedAttendance("EMP002");
@@ -78,9 +80,8 @@ public class DataLoader implements CommandLineRunner {
         seedAttendance("EMP007");
         seedAttendance("EMP008");
 
-        // Seed a couple of sample leave requests
+        // Seed sample leave requests
         seedLeaves();
-
     }
 
     private void createDepartment(String code, String name, String location) {
@@ -94,7 +95,11 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Created department: " + name);
     }
 
-    private void createEmployee(String empCode, String firstName, String lastName, String email, String salary, String deptId) {
+    private void createEmployeeIfNotExists(String empCode, String firstName, String lastName, String email, String salary, String deptId) {
+        if (employeeService.getById(empCode) != null) {
+            System.out.println("Employee " + empCode + " already exists, skipping");
+            return;
+        }
         EmployeeDynamo emp = new EmployeeDynamo();
         emp.setId(empCode);
         emp.setEmployeeCode(empCode);
@@ -162,18 +167,18 @@ public class DataLoader implements CommandLineRunner {
 
     // Minimal sample leave requests per first two employees
     private void seedLeaves() {
-        createLeave("EMP001", LocalDate.now().plusDays(3), LocalDate.now().plusDays(4), "SICK", "Fever");
-        createLeave("EMP002", LocalDate.now().plusDays(5), LocalDate.now().plusDays(7), "PTO", "Family trip");
+        createLeave("EMP001", LocalDate.now().plusDays(3), LocalDate.now().plusDays(4), LeaveType.SICK, "Fever");
+        createLeave("EMP002", LocalDate.now().plusDays(5), LocalDate.now().plusDays(7), LeaveType.PTO, "Family trip");
     }
 
-    private void createLeave(String empId, LocalDate start, LocalDate end, String type, String reason) {
+    private void createLeave(String empId, LocalDate start, LocalDate end, LeaveType type, String reason) {
         LeaveRequestDynamo r = new LeaveRequestDynamo();
         r.setEmployeeId(empId);
         r.setStartDate(start.format(DateTimeFormatter.ISO_LOCAL_DATE));
         r.setEndDate(end.format(DateTimeFormatter.ISO_LOCAL_DATE));
         r.setType(type);
         r.setReason(reason);
-        r.setStatus("PENDING");
+        r.setStatus(LeaveStatus.PENDING);
         r.setId("LEAVE-" + empId + "-" + r.getStartDate());
         r.setTimestamps();
         leaveService.create(r);

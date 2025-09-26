@@ -3,9 +3,14 @@ package com.example.hrms.entity.dynamo;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
 
 @DynamoDBTable(tableName = "leaves")
 public class LeaveRequestDynamo extends BaseEntity {
+
+    public LeaveRequestDynamo() {
+        super();
+    }
 
     @DynamoDBHashKey
     private String id; 
@@ -19,13 +24,15 @@ public class LeaveRequestDynamo extends BaseEntity {
     private String endDate; 
 
     @DynamoDBAttribute
-    private String type; // SICK, CASUAL, PTO
+    @DynamoDBTypeConvertedEnum
+    private LeaveType type;
 
     @DynamoDBAttribute
     private String reason;
 
     @DynamoDBAttribute
-    private String status; // PENDING, APPROVED, REJECTED
+    @DynamoDBTypeConvertedEnum
+    private LeaveStatus status;
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -39,14 +46,14 @@ public class LeaveRequestDynamo extends BaseEntity {
     public String getEndDate() { return endDate; }
     public void setEndDate(String endDate) { this.endDate = endDate; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public LeaveType getType() { return type; }
+    public void setType(LeaveType type) { this.type = type; }
 
     public String getReason() { return reason; }
     public void setReason(String reason) { this.reason = reason; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public LeaveStatus getStatus() { return status; }
+    public void setStatus(LeaveStatus status) { this.status = status; }
 }
 
 

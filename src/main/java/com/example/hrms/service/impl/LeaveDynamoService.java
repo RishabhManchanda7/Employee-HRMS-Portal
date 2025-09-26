@@ -1,6 +1,7 @@
 package com.example.hrms.service.impl;
 
 import com.example.hrms.entity.dynamo.LeaveRequestDynamo;
+import com.example.hrms.entity.dynamo.LeaveStatus;
 import com.example.hrms.repository.dynamo.LeaveRequestDynamoRepository;
 import com.example.hrms.service.LeaveService;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,15 @@ public class LeaveDynamoService implements LeaveService {
         this.repo = repo;
     }
 
+
     @Override
     public LeaveRequestDynamo create(LeaveRequestDynamo request) {
         if (request.getId() == null || request.getId().isEmpty()) {
             String base = request.getEmployeeId() + "-" + request.getStartDate();
             request.setId("LEAVE-" + base);
         }
-        if (request.getStatus() == null || request.getStatus().isEmpty()) {
-            request.setStatus("PENDING");
+        if (request.getStatus() == null) {
+            request.setStatus(LeaveStatus.PENDING);
         }
         request.setTimestamps();
         return repo.save(request);
@@ -40,8 +42,8 @@ public class LeaveDynamoService implements LeaveService {
                 String base = r.getEmployeeId() + "-" + r.getStartDate();
                 r.setId("LEAVE-" + base);
             }
-            if (r.getStatus() == null || r.getStatus().isEmpty()) {
-                r.setStatus("PENDING");
+            if (r.getStatus() == null) {
+                r.setStatus(LeaveStatus.PENDING);
             }
             r.setTimestamps();
             saved.add(repo.save(r));
@@ -60,7 +62,7 @@ public class LeaveDynamoService implements LeaveService {
     }
 
     @Override
-    public List<LeaveRequestDynamo> getByStatus(String status) {
+    public List<LeaveRequestDynamo> getByStatus(LeaveStatus status) {
         return repo.findByStatus(status);
     }
 
@@ -69,7 +71,7 @@ public class LeaveDynamoService implements LeaveService {
         Optional<LeaveRequestDynamo> opt = repo.findById(id);
         if (!opt.isPresent()) return null;
         LeaveRequestDynamo r = opt.get();
-        r.setStatus("APPROVED");
+        r.setStatus(LeaveStatus.APPROVED);
         r.setTimestamps();
         return repo.save(r);
     }
@@ -79,7 +81,7 @@ public class LeaveDynamoService implements LeaveService {
         Optional<LeaveRequestDynamo> opt = repo.findById(id);
         if (!opt.isPresent()) return null;
         LeaveRequestDynamo r = opt.get();
-        r.setStatus("REJECTED");
+        r.setStatus(LeaveStatus.REJECTED);
         if (reason != null && !reason.isEmpty()) {
             r.setReason(reason);
         }

@@ -29,6 +29,10 @@ public class EmployeeDynamoService implements EmployeeService {
 
     @Override
     public EmployeeDynamo create(EmployeeDynamo employee) {
+        Optional<EmployeeDynamo> employeeDynamo = employeeRepo.findByEmployeeCode(employee.getEmployeeCode());
+        if(employeeDynamo.isPresent()){
+            throw new RuntimeException("Employee already exists");
+        }
         employee.setTimestamps();
         return employeeRepo.save(employee);
     }
