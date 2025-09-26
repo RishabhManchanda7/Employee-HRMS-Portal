@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-//yaml file
+//.
 @Configuration
 @EnableDynamoDBRepositories(basePackages = "com.example.hrms.repository")
 public class DynamoDBConfig {
