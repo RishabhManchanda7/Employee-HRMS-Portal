@@ -20,8 +20,10 @@ class EmployeeDynamoTest {
     @Test
     void testEmployeeCreation() {
         assertNotNull(employee);
-        assertEquals("EMP001", employee.getId());
         assertEquals("EMP001", employee.getEmployeeCode());
+        // ID is now hash-based and hidden from JSON
+        assertNotNull(employee.getId());
+        assertNotEquals("EMP001", employee.getId()); // ID should be hash, not employee code
     }
 
     @Test
@@ -37,6 +39,7 @@ class EmployeeDynamoTest {
         assertEquals("john@company.com", employee.getEmail());
         assertEquals(new BigDecimal("75000"), employee.getSalary());
         assertEquals("DEPT-IT", employee.getDepartmentId());
+        assertEquals("EMP001", employee.getEmployeeCode());
     }
 
     @Test
@@ -56,5 +59,18 @@ class EmployeeDynamoTest {
         // Check timestamps are valid ISO strings
         assertTrue(employee.getCreatedAt().contains("T"));
         assertTrue(employee.getUpdatedAt().contains("T"));
+    }
+    
+    @Test
+    void testHashIdGeneration() {
+        EmployeeDynamo emp1 = new EmployeeDynamo("EMP001");
+        EmployeeDynamo emp2 = new EmployeeDynamo("EMP002");
+        
+        // Different employee codes should generate different hash IDs
+        assertNotEquals(emp1.getId(), emp2.getId());
+        
+        // Same employee code should generate same hash ID
+        EmployeeDynamo emp3 = new EmployeeDynamo("EMP001");
+        assertEquals(emp1.getId(), emp3.getId());
     }
 }

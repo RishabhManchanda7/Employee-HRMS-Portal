@@ -43,8 +43,7 @@ class PayrollGenerationBDDTest {
 
             @BeforeEach
             void whenPayrollGenerated() {
-                payroll = new PayrollDynamo();
-                payroll.setId("PAY001");
+                payroll = new PayrollDynamo("PAY-EMP001-2024-01");
                 payroll.setEmployeeId("EMP001");
                 payroll.setPayPeriod("2024-01");
                 payroll.setBaseSalary(new BigDecimal("50000"));
@@ -60,9 +59,12 @@ class PayrollGenerationBDDTest {
             @DisplayName("Then payroll should be created successfully")
             void thenPayrollShouldBeCreated() {
                 assertNotNull(payroll);
-                assertEquals("PAY001", payroll.getId());
+                assertEquals("PAY-EMP001-2024-01", payroll.getPayrollCode());
                 assertEquals("EMP001", payroll.getEmployeeId());
                 assertEquals("GENERATED", payroll.getStatus());
+                // ID should be hash-based, not the payroll code
+                assertNotNull(payroll.getId());
+                assertNotEquals("PAY-EMP001-2024-01", payroll.getId());
             }
 
             @Test
@@ -111,8 +113,8 @@ class PayrollGenerationBDDTest {
             void thenPayrollGeneratedForAll() {
                 List<PayrollDynamo> payrolls = employees.stream()
                     .map(emp -> {
-                        PayrollDynamo p = new PayrollDynamo();
-                        p.setEmployeeId(emp.getId());
+                        PayrollDynamo p = new PayrollDynamo("PAY-" + emp.getEmployeeCode() + "-2024-01");
+                        p.setEmployeeId(emp.getEmployeeCode());
                         p.setBaseSalary(emp.getSalary());
                         p.setStatus("GENERATED");
                         return p;
@@ -148,7 +150,7 @@ class PayrollGenerationBDDTest {
         @Test
         @DisplayName("When payroll is approved Then status should change to APPROVED")
         void whenApproved_thenStatusShouldChange() {
-            payroll = new PayrollDynamo();
+            payroll = new PayrollDynamo("PAY-TEST-2024-01");
             payroll.setStatus("GENERATED");
             
             payroll.setStatus("APPROVED");
@@ -159,7 +161,7 @@ class PayrollGenerationBDDTest {
         @Test
         @DisplayName("When payroll is processed Then status should change to PROCESSED")
         void whenProcessed_thenStatusShouldChange() {
-            payroll = new PayrollDynamo();
+            payroll = new PayrollDynamo("PAY-TEST-2024-01");
             payroll.setStatus("APPROVED");
             
             payroll.setStatus("PROCESSED");
