@@ -3,11 +3,15 @@ package com.example.hrms.entity.dynamo;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.Instant;
+import java.security.MessageDigest;
+import java.nio.charset.StandardCharsets;
 
 public abstract class BaseEntity {
     
+    @JsonIgnore
     private String id;
     
     @DynamoDBAttribute
@@ -21,6 +25,7 @@ public abstract class BaseEntity {
     }
 
     // Getters and Setters
+    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -37,5 +42,23 @@ public abstract class BaseEntity {
             this.createdAt = now;
         }
         this.updatedAt = now;
+    }
+    
+    @DynamoDBIgnore
+    @JsonIgnore
+    protected String generateHashId(String businessKey) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(businessKey.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString().substring(0, 16);
+        } catch (Exception e) {
+            return businessKey.hashCode() + "";
+        }
     }
 }

@@ -41,9 +41,19 @@ public class EmployeeDynamoService implements EmployeeService {
     public EmployeeDynamo update(String id, EmployeeDynamo employee) {
         Optional<EmployeeDynamo> existing = employeeRepo.findById(id);
         if (existing.isPresent()) {
-            employee.setId(id);
-            employee.setTimestamps();
-            return employeeRepo.save(employee);
+            EmployeeDynamo existingEmployee = existing.get();
+            
+            // Only update fields that are not null
+            if (employee.getFirstName() != null) existingEmployee.setFirstName(employee.getFirstName());
+            if (employee.getLastName() != null) existingEmployee.setLastName(employee.getLastName());
+            if (employee.getEmail() != null) existingEmployee.setEmail(employee.getEmail());
+            if (employee.getSalary() != null) existingEmployee.setSalary(employee.getSalary());
+            if (employee.getDepartmentId() != null) existingEmployee.setDepartmentId(employee.getDepartmentId());
+            if (employee.getJoinDate() != null) existingEmployee.setJoinDate(employee.getJoinDate());
+            if (employee.getEmployeeCode() != null) existingEmployee.setEmployeeCode(employee.getEmployeeCode());
+            
+            existingEmployee.setTimestamps();
+            return employeeRepo.save(existingEmployee);
         }
         return null;
     }
@@ -56,6 +66,23 @@ public class EmployeeDynamoService implements EmployeeService {
     @Override
     public EmployeeDynamo findByEmployeeCode(String empCode) {
         return employeeRepo.findByEmployeeCode(empCode).orElse(null);
+    }
+    
+    @Override
+    public EmployeeDynamo updateByEmployeeCode(String employeeCode, EmployeeDynamo employee) {
+        EmployeeDynamo existing = findByEmployeeCode(employeeCode);
+        if (existing != null) {
+            return update(existing.getId(), employee);
+        }
+        return null;
+    }
+    
+    @Override
+    public void deleteByEmployeeCode(String employeeCode) {
+        EmployeeDynamo existing = findByEmployeeCode(employeeCode);
+        if (existing != null) {
+            delete(existing.getId());
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.hrms.entity.dynamo;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
 
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 public class PayrollDynamo extends BaseEntity {
     
     @DynamoDBHashKey
+    @JsonIgnore
     private String id;
     
     @DynamoDBAttribute
@@ -49,18 +51,19 @@ public class PayrollDynamo extends BaseEntity {
     public PayrollDynamo(String payrollCode) {
         this();
         this.payrollCode = payrollCode;
-        this.setId(payrollCode);
+        this.setId(generateHashId(payrollCode));
         setTimestamps();
     }
 
     // Getters and Setters
+    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
     public String getPayrollCode() { return payrollCode; }
     public void setPayrollCode(String payrollCode) { 
         this.payrollCode = payrollCode;
-        this.setId(payrollCode);
+        this.setId(generateHashId(payrollCode));
     }
 
     public String getPayPeriod() { return payPeriod; }

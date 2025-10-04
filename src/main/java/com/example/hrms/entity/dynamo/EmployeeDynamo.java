@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
 
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 public class EmployeeDynamo extends BaseEntity {
     
     @DynamoDBHashKey
+    @JsonIgnore
     private String id;
     
     @DynamoDBAttribute
@@ -41,18 +43,19 @@ public class EmployeeDynamo extends BaseEntity {
     public EmployeeDynamo(String employeeCode) {
         this();
         this.employeeCode = employeeCode;
-        this.setId(employeeCode);
+        this.setId(generateHashId(employeeCode));
         setTimestamps();
     }
 
     // Getters and Setters
+    @JsonIgnore  // Hide from JSON responses
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
     public String getEmployeeCode() { return employeeCode; }
     public void setEmployeeCode(String employeeCode) { 
         this.employeeCode = employeeCode;
-        this.setId(employeeCode);
+        this.setId(generateHashId(employeeCode));
     }
 
     public String getFirstName() { return firstName; }

@@ -64,29 +64,48 @@ public class LeaveDynamoService implements LeaveService {
     @Override
     public List<LeaveRequestDynamo> getByStatus(LeaveStatus status) {
         return repo.findByStatus(status);
+
     }
 
     @Override
-    public LeaveRequestDynamo approve(String id) {
-        Optional<LeaveRequestDynamo> opt = repo.findById(id);
-        if (!opt.isPresent()) return null;
-        LeaveRequestDynamo r = opt.get();
-        r.setStatus(LeaveStatus.APPROVED);
-        r.setTimestamps();
-        return repo.save(r);
-    }
-
-    @Override
-    public LeaveRequestDynamo reject(String id, String reason) {
-        Optional<LeaveRequestDynamo> opt = repo.findById(id);
-        if (!opt.isPresent()) return null;
-        LeaveRequestDynamo r = opt.get();
-        r.setStatus(LeaveStatus.REJECTED);
-        if (reason != null && !reason.isEmpty()) {
-            r.setReason(reason);
+    public LeaveRequestDynamo updateStatus(String leaveRequestCode, LeaveStatus status, String reason) {
+        // Find by leaveRequestCode to get the ID
+        Iterable<LeaveRequestDynamo> leavesIterable = repo.findAll();
+        String leaveId = null;
+        for (LeaveRequestDynamo l : leavesIterable) {
+            if (leaveRequestCode.equals(l.getLeaveRequestCode())) {
+                leaveId = l.getId();
+                break;
+            }
         }
-        r.setTimestamps();
-        return repo.save(r);
+            
+        if (leaveId == null) return null;
+        
+        // Use ID to fetch and update
+        Optional<LeaveRequestDynamo> opt = repo.findById(leaveId);
+        if (!opt.isPresent()) return null;
+        
+        LeaveRequestDynamo leave = opt.get();
+        leave.setStatus(status);
+        if (reason != null && !reason.isEmpty()) {
+            leave.setReason(reason);
+        }
+        leave.setTimestamps();
+        return repo.save(leave);
+    }
+    
+    @Override
+    public LeaveRequestDynamo updateStatusById(String id, LeaveStatus status, String reason) {
+        Optional<LeaveRequestDynamo> opt = repo.findById(id);
+        if (!opt.isPresent()) return null;
+        
+        LeaveRequestDynamo leave = opt.get();
+        leave.setStatus(status);
+        if (reason != null && !reason.isEmpty()) {
+            leave.setReason(reason);
+        }
+        leave.setTimestamps();
+        return repo.save(leave);
     }
 }
 

@@ -46,22 +46,28 @@ public class LeaveController {
         return service.getByStatus(status);
     }
 
-    @PutMapping("/{id}/approve")
-    public ResponseEntity<LeaveRequestDynamo> approve(@PathVariable String id) {
-        LeaveRequestDynamo r = service.approve(id);
-        if (r == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(r);
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody StatusUpdateBody body) {
+        try {
+            if (body.getStatus() == null) {
+                return ResponseEntity.badRequest().body("Status is required");
+            }
+            LeaveStatus status = LeaveStatus.valueOf(body.getStatus().toUpperCase());
+            LeaveRequestDynamo r = service.updateStatusById(id, status, body.getReason());
+            if (r == null) return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(r);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
-    @PutMapping("/{id}/reject")
-    public ResponseEntity<LeaveRequestDynamo> reject(@PathVariable String id, @RequestBody RejectBody body) {
-        LeaveRequestDynamo r = service.reject(id, body != null ? body.getReason() : null);
-        if (r == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(r);
-    }
-
-    public static class RejectBody {
+    public static class StatusUpdateBody {
+        private String status;
         private String reason;
+        
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        
         public String getReason() { return reason; }
         public void setReason(String reason) { this.reason = reason; }
     }

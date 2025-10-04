@@ -3,11 +3,13 @@ package com.example.hrms.entity.dynamo;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @DynamoDBTable(tableName = "attendances")
 public class AttendanceDynamo extends BaseEntity {
     
     @DynamoDBHashKey
+    @JsonIgnore
     private String id;
     
     @DynamoDBAttribute
@@ -23,13 +25,14 @@ public class AttendanceDynamo extends BaseEntity {
         super();
     }
 
-    public AttendanceDynamo(String id) {
+    public AttendanceDynamo(String attendanceKey) {
         this();
-        this.setId(id);
+        this.setId(generateHashId(attendanceKey));
         setTimestamps();
     }
 
     // Getters and Setters
+    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

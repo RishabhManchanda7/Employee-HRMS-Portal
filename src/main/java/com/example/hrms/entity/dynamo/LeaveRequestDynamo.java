@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @DynamoDBTable(tableName = "leaves")
 public class LeaveRequestDynamo extends BaseEntity {
@@ -11,9 +12,20 @@ public class LeaveRequestDynamo extends BaseEntity {
     public LeaveRequestDynamo() {
         super();
     }
+    
+    public LeaveRequestDynamo(String leaveRequestCode) {
+        this();
+        this.leaveRequestCode = leaveRequestCode;
+        this.setId(generateHashId(leaveRequestCode));
+        setTimestamps();
+    }
 
     @DynamoDBHashKey
-    private String id; 
+    @JsonIgnore
+    private String id;
+    
+    @DynamoDBAttribute
+    private String leaveRequestCode; 
     @DynamoDBAttribute
     private String employeeId;
 
@@ -34,8 +46,15 @@ public class LeaveRequestDynamo extends BaseEntity {
     @DynamoDBTypeConvertedEnum
     private LeaveStatus status;
 
+    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+    
+    public String getLeaveRequestCode() { return leaveRequestCode; }
+    public void setLeaveRequestCode(String leaveRequestCode) { 
+        this.leaveRequestCode = leaveRequestCode;
+        this.setId(generateHashId(leaveRequestCode));
+    }
 
     public String getEmployeeId() { return employeeId; }
     public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }

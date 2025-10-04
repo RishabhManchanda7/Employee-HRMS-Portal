@@ -21,26 +21,31 @@ public class EmployeeController {
         return service.getAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDynamo> get(@PathVariable String id) {
-        EmployeeDynamo e = service.getById(id);
+    @GetMapping("/{employeeCode}")
+    public ResponseEntity<EmployeeDynamo> get(@PathVariable String employeeCode) {
+        EmployeeDynamo e = service.findByEmployeeCode(employeeCode);
         if (e == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(e);
     }
 
     @PostMapping
-    public EmployeeDynamo create(@RequestBody EmployeeDynamo e) {
-        return service.create(e);
+    public ResponseEntity<?> create(@RequestBody EmployeeDynamo e) {
+        try {
+            EmployeeDynamo created = service.create(e);
+            return ResponseEntity.ok(created);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    @PutMapping("/{id}")
-    public EmployeeDynamo update(@PathVariable String id, @RequestBody EmployeeDynamo e) {
-        return service.update(id, e);
+    @PutMapping("/{employeeCode}")
+    public EmployeeDynamo update(@PathVariable String employeeCode, @RequestBody EmployeeDynamo e) {
+        return service.updateByEmployeeCode(employeeCode, e);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        service.delete(id);
+    @DeleteMapping("/{employeeCode}")
+    public ResponseEntity<Void> delete(@PathVariable String employeeCode) {
+        service.deleteByEmployeeCode(employeeCode);
         return ResponseEntity.noContent().build();
     }
 }

@@ -11,8 +11,8 @@ public interface LeaveService {
     LeaveRequestDynamo getById(String id);
     List<LeaveRequestDynamo> getByEmployee(String employeeId);
     List<LeaveRequestDynamo> getByStatus(LeaveStatus status);
-    LeaveRequestDynamo approve(String id);
-    LeaveRequestDynamo reject(String id, String reason);
+    LeaveRequestDynamo updateStatus(String leaveRequestCode, LeaveStatus status, String reason);
+    LeaveRequestDynamo updateStatusById(String id, LeaveStatus status, String reason);
 }
 
 
