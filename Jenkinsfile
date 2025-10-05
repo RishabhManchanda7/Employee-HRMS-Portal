@@ -37,6 +37,7 @@ pipeline {
                     publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
                 }
             }
+
         }
         
         stage('Start DynamoDB Local') {
@@ -114,7 +115,7 @@ pipeline {
                 Build: ${env.BUILD_NUMBER}
                 Date: ${new Date()}
                 Error: ${env.BUILD_LOG}
-                
+
                 Please check the Jenkins console output for details.
                 """,
                 to: "devops@company.com,hr@company.com"

@@ -44,9 +44,17 @@ public class DynamoDBConfig {
     @Bean
     @Primary
     public AmazonDynamoDB amazonDynamoDB() {
-        return AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(dynamoDbEndpoint, region))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .build();
+        // For local development (when endpoint is specified)
+        if (dynamoDbEndpoint != null && !dynamoDbEndpoint.isEmpty()) {
+            return AmazonDynamoDBClientBuilder.standard()
+                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(dynamoDbEndpoint, region))
+                    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                    .build();
+        } else {
+            // For AWS production (uses IAM role)
+            return AmazonDynamoDBClientBuilder.standard()
+                    .withRegion(region)
+                    .build();
+        }
     }
 }
