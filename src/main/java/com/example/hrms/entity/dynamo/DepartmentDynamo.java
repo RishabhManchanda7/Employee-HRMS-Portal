@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class DepartmentDynamo extends BaseEntity {
     
     @DynamoDBHashKey
-    @JsonIgnore
     private String id;
     
     @DynamoDBAttribute
@@ -33,7 +32,6 @@ public class DepartmentDynamo extends BaseEntity {
     }
 
     // Getters and Setters
-    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

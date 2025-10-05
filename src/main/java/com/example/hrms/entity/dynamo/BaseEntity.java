@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 
 public abstract class BaseEntity {
     
-    @JsonIgnore
     private String id;
     
     @DynamoDBAttribute
@@ -25,7 +24,6 @@ public abstract class BaseEntity {
     }
 
     // Getters and Setters
-    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -46,7 +44,7 @@ public abstract class BaseEntity {
     
     @DynamoDBIgnore
     @JsonIgnore
-    protected String generateHashId(String businessKey) {
+    public String generateHashId(String businessKey) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(businessKey.getBytes(StandardCharsets.UTF_8));

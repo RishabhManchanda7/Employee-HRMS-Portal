@@ -11,8 +11,9 @@ import java.math.BigDecimal;
 public class PayrollDynamo extends BaseEntity {
     
     @DynamoDBHashKey
-    @JsonIgnore
     private String id;
+    
+
     
     @DynamoDBAttribute
     private String payrollCode;
@@ -56,7 +57,6 @@ public class PayrollDynamo extends BaseEntity {
     }
 
     // Getters and Setters
-    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

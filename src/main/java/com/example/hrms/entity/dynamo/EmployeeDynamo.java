@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
 
+
 @DynamoDBTable(tableName = "employees")
 public class EmployeeDynamo extends BaseEntity {
     
@@ -35,6 +36,12 @@ public class EmployeeDynamo extends BaseEntity {
     
     @DynamoDBAttribute
     private String departmentId;
+    
+    @DynamoDBAttribute
+    private String createdAt;
+    
+    @DynamoDBAttribute
+    private String updatedAt;
 
     public EmployeeDynamo() {
         super();
@@ -48,7 +55,7 @@ public class EmployeeDynamo extends BaseEntity {
     }
 
     // Getters and Setters
-    @JsonIgnore  // Hide from JSON responses
+    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -75,6 +82,14 @@ public class EmployeeDynamo extends BaseEntity {
 
     public String getDepartmentId() { return departmentId; }
     public void setDepartmentId(String departmentId) { this.departmentId = departmentId; }
+
+    @JsonIgnore
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
+    @JsonIgnore
+    public String getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 
     @DynamoDBIgnore
     public String getFullName() {

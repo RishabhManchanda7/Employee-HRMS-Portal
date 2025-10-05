@@ -4,10 +4,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @DynamoDBTable(tableName = "leaves")
 public class LeaveRequestDynamo extends BaseEntity {
+
+    @DynamoDBHashKey
+    private String id;
 
     public LeaveRequestDynamo() {
         super();
@@ -19,10 +21,6 @@ public class LeaveRequestDynamo extends BaseEntity {
         this.setId(generateHashId(leaveRequestCode));
         setTimestamps();
     }
-
-    @DynamoDBHashKey
-    @JsonIgnore
-    private String id;
     
     @DynamoDBAttribute
     private String leaveRequestCode; 
@@ -46,10 +44,10 @@ public class LeaveRequestDynamo extends BaseEntity {
     @DynamoDBTypeConvertedEnum
     private LeaveStatus status;
 
-    @JsonIgnore
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
-    
+
     public String getLeaveRequestCode() { return leaveRequestCode; }
     public void setLeaveRequestCode(String leaveRequestCode) { 
         this.leaveRequestCode = leaveRequestCode;
