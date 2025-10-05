@@ -18,19 +18,22 @@ public class AttendanceDynamo extends BaseEntity {
     private String status; // "P", "A", "L"
     
     @DynamoDBAttribute
-    private String employeeId;
+    private String employeeCode;
 
     public AttendanceDynamo() {
         super();
     }
 
-    public AttendanceDynamo(String attendanceKey) {
+    public AttendanceDynamo(String employeeCode, String date) {
         this();
-        this.setId(generateHashId(attendanceKey));
+        this.employeeCode = employeeCode;
+        this.date = date;
+        this.setId(generateHashId(employeeCode + "-" + date));
         setTimestamps();
     }
 
     // Getters and Setters
+    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     
@@ -40,6 +43,6 @@ public class AttendanceDynamo extends BaseEntity {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public String getEmployeeId() { return employeeId; }
-    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+    public String getEmployeeCode() { return employeeCode; }
+    public void setEmployeeCode(String employeeCode) { this.employeeCode = employeeCode; }
 }

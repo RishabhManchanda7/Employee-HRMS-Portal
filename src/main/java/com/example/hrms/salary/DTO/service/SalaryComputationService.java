@@ -100,7 +100,7 @@ public class SalaryComputationService {
         PayrollDynamo payroll = new PayrollDynamo();
         String payrollCode = "PAY-" + employeeCode + "-" + payPeriod;
         payroll.setPayrollCode(payrollCode);
-        payroll.setEmployeeId(employee.getId());
+        payroll.setEmployeeCode(employee.getEmployeeCode());
         payroll.setPayPeriod(payPeriod);
         payroll.setBaseSalary(employee.getSalary());
         payroll.setOvertimePay(overtimePay != null ? overtimePay : BigDecimal.ZERO);
@@ -145,7 +145,7 @@ public class SalaryComputationService {
         }
         
         EmployeeDynamo employee = employeeOpt.get();
-        return payrollRepository.findByEmployeeId(employee.getId());
+        return payrollRepository.findByEmployeeCode(employee.getEmployeeCode());
     }
     
     /**
@@ -176,7 +176,7 @@ public class SalaryComputationService {
         }
         
         // Get latest payroll information
-        List<PayrollDynamo> payrolls = payrollRepository.findByEmployeeId(employee.getId());
+        List<PayrollDynamo> payrolls = payrollRepository.findByEmployeeCode(employee.getEmployeeCode());
         if (!payrolls.isEmpty()) {
             // Get the most recent payroll record
             PayrollDynamo latestPayroll = payrolls.stream()

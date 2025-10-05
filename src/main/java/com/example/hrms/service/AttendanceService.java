@@ -12,9 +12,9 @@ public interface AttendanceService {
     AttendanceDynamo update(String id, AttendanceDynamo attendance);
     void delete(String id);
 
-    List<AttendanceDynamo> findByEmployeeId(String employeeId);
+    List<AttendanceDynamo> findByEmployeeCode(String employeeCode);
     List<AttendanceDynamo> findByDate(String date);
-    List<AttendanceDynamo> findByEmployeeIdAndDate(String employeeId, String date);
+    List<AttendanceDynamo> findByEmployeeCodeAndDate(String employeeCode, String date);
 }
 
 

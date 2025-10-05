@@ -12,7 +12,7 @@ import java.util.List;
 public interface AttendanceDynamoRepository extends DynamoDBPagingAndSortingRepository<AttendanceDynamo, String> {
 
 
-    List<AttendanceDynamo> findByEmployeeId(String employeeId);
+    List<AttendanceDynamo> findByEmployeeCode(String employeeCode);
     
     // Find by date
     List<AttendanceDynamo> findByDate(String date);
@@ -20,6 +20,6 @@ public interface AttendanceDynamoRepository extends DynamoDBPagingAndSortingRepo
     // Find by status
     List<AttendanceDynamo> findByStatus(String status);
     
-    // Find by employee ID and date
-    List<AttendanceDynamo> findByEmployeeIdAndDate(String employeeId, String date);
+    // Find by employee code and date
+    List<AttendanceDynamo> findByEmployeeCodeAndDate(String employeeCode, String date);
 }

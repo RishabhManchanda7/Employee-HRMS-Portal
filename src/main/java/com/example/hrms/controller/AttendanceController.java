@@ -51,9 +51,9 @@ public class AttendanceController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/employee/{employeeId}")
-    public List<AttendanceDynamo> byEmployee(@PathVariable String employeeId) {
-        return service.findByEmployeeId(employeeId);
+    @GetMapping("/employee/{employeeCode}")
+    public List<AttendanceDynamo> byEmployee(@PathVariable String employeeCode) {
+        return service.findByEmployeeCode(employeeCode);
     }
 
     @GetMapping("/date/{date}")
@@ -61,9 +61,9 @@ public class AttendanceController {
         return service.findByDate(date);
     }
 
-    @GetMapping("/employee/{employeeId}/date/{date}")
-    public List<AttendanceDynamo> byEmployeeAndDate(@PathVariable String employeeId, @PathVariable String date) {
-        return service.findByEmployeeIdAndDate(employeeId, date);
+    @GetMapping("/employee/{employeeCode}/date/{date}")
+    public List<AttendanceDynamo> byEmployeeAndDate(@PathVariable String employeeCode, @PathVariable String date) {
+        return service.findByEmployeeCodeAndDate(employeeCode, date);
     }
 }
 

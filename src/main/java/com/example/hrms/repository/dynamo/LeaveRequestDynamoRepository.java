@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 @EnableScan
 public interface LeaveRequestDynamoRepository extends DynamoDBPagingAndSortingRepository<LeaveRequestDynamo, String> {
-    List<LeaveRequestDynamo> findByEmployeeId(String employeeId);
+    List<LeaveRequestDynamo> findByEmployeeCode(String employeeCode);
     List<LeaveRequestDynamo> findByStatus(LeaveStatus status);
 }
 

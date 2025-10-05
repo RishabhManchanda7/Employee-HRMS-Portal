@@ -15,8 +15,8 @@ public interface PayrollDynamoRepository extends DynamoDBPagingAndSortingReposit
     // Find by payroll code
     Optional<PayrollDynamo> findByPayrollCode(String payrollCode);
     
-    // Find by employee ID
-    List<PayrollDynamo> findByEmployeeId(String employeeId);
+    // Find by employee code
+    List<PayrollDynamo> findByEmployeeCode(String employeeCode);
     
     // Find by status
     List<PayrollDynamo> findByStatus(String status);

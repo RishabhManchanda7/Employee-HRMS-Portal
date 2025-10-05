@@ -22,10 +22,17 @@ public class LeaveDynamoService implements LeaveService {
 
     @Override
     public LeaveRequestDynamo create(LeaveRequestDynamo request) {
-        if (request.getId() == null || request.getId().isEmpty()) {
-            String base = request.getEmployeeId() + "-" + request.getStartDate();
-            request.setId("LEAVE-" + base);
+        // Auto-generate leaveRequestCode if not provided
+        if (request.getLeaveRequestCode() == null || request.getLeaveRequestCode().isEmpty()) {
+            String leaveCode = "LEAVE-" + request.getEmployeeCode() + "-" + request.getStartDate();
+            request.setLeaveRequestCode(leaveCode);
         }
+        
+        // Generate hash ID from leaveRequestCode
+        if (request.getId() == null || request.getId().isEmpty()) {
+            request.setId(request.generateHashId(request.getLeaveRequestCode()));
+        }
+        
         if (request.getStatus() == null) {
             request.setStatus(LeaveStatus.PENDING);
         }
@@ -38,9 +45,15 @@ public class LeaveDynamoService implements LeaveService {
         List<LeaveRequestDynamo> saved = new ArrayList<>();
         if (requests == null) return saved;
         for (LeaveRequestDynamo r : requests) {
+            // Auto-generate leaveRequestCode if not provided
+            if (r.getLeaveRequestCode() == null || r.getLeaveRequestCode().isEmpty()) {
+                String leaveCode = "LEAVE-" + r.getEmployeeCode() + "-" + r.getStartDate();
+                r.setLeaveRequestCode(leaveCode);
+            }
+            
+            // Generate hash ID from leaveRequestCode
             if (r.getId() == null || r.getId().isEmpty()) {
-                String base = r.getEmployeeId() + "-" + r.getStartDate();
-                r.setId("LEAVE-" + base);
+                r.setId(r.generateHashId(r.getLeaveRequestCode()));
             }
             if (r.getStatus() == null) {
                 r.setStatus(LeaveStatus.PENDING);
@@ -57,8 +70,8 @@ public class LeaveDynamoService implements LeaveService {
     }
 
     @Override
-    public List<LeaveRequestDynamo> getByEmployee(String employeeId) {
-        return repo.findByEmployeeId(employeeId);
+    public List<LeaveRequestDynamo> getByEmployee(String employeeCode) {
+        return repo.findByEmployeeCode(employeeCode);
     }
 
     @Override

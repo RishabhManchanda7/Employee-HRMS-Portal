@@ -36,9 +36,9 @@ public class LeaveController {
         return ResponseEntity.ok(r);
     }
 
-    @GetMapping("/employee/{employeeId}")
-    public List<LeaveRequestDynamo> byEmployee(@PathVariable String employeeId) {
-        return service.getByEmployee(employeeId);
+    @GetMapping("/employee/{employeeCode}")
+    public List<LeaveRequestDynamo> byEmployee(@PathVariable String employeeCode) {
+        return service.getByEmployee(employeeCode);
     }
 
     @GetMapping("/status/{status}")

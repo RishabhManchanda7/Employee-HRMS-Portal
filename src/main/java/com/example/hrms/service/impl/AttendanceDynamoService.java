@@ -34,7 +34,7 @@ public class AttendanceDynamoService implements AttendanceService {
     @Override
     public AttendanceDynamo create(AttendanceDynamo attendance) {
         if (attendance.getId() == null || attendance.getId().isEmpty()) {
-            attendance.setId(attendance.getEmployeeId() + "-" + attendance.getDate());
+            attendance.setId(attendance.getEmployeeCode() + "-" + attendance.getDate());
         }
         attendance.setTimestamps();
         return attendanceRepo.save(attendance);
@@ -46,7 +46,7 @@ public class AttendanceDynamoService implements AttendanceService {
         if (records == null) return saved;
         for (AttendanceDynamo r : records) {
             if (r.getId() == null || r.getId().isEmpty()) {
-                r.setId(r.getEmployeeId() + "-" + r.getDate());
+                r.setId(r.getEmployeeCode() + "-" + r.getDate());
             }
             r.setTimestamps();
             saved.add(attendanceRepo.save(r));
@@ -71,8 +71,8 @@ public class AttendanceDynamoService implements AttendanceService {
     }
 
     @Override
-    public List<AttendanceDynamo> findByEmployeeId(String employeeId) {
-        return attendanceRepo.findByEmployeeId(employeeId);
+    public List<AttendanceDynamo> findByEmployeeCode(String employeeCode) {
+        return attendanceRepo.findByEmployeeCode(employeeCode);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class AttendanceDynamoService implements AttendanceService {
     }
 
     @Override
-    public List<AttendanceDynamo> findByEmployeeIdAndDate(String employeeId, String date) {
-        return attendanceRepo.findByEmployeeIdAndDate(employeeId, date);
+    public List<AttendanceDynamo> findByEmployeeCodeAndDate(String employeeCode, String date) {
+        return attendanceRepo.findByEmployeeCodeAndDate(employeeCode, date);
     }
 }
 

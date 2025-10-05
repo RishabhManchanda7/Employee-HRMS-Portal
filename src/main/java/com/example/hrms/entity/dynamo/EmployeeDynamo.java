@@ -38,9 +38,11 @@ public class EmployeeDynamo extends BaseEntity {
     private String departmentId;
     
     @DynamoDBAttribute
+    @JsonIgnore
     private String createdAt;
     
     @DynamoDBAttribute
+    @JsonIgnore
     private String updatedAt;
 
     public EmployeeDynamo() {
@@ -83,12 +85,7 @@ public class EmployeeDynamo extends BaseEntity {
     public String getDepartmentId() { return departmentId; }
     public void setDepartmentId(String departmentId) { this.departmentId = departmentId; }
 
-    @JsonIgnore
-    public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
-
-    @JsonIgnore
-    public String getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 
     @DynamoDBIgnore

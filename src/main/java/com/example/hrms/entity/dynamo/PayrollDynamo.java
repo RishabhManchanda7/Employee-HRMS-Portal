@@ -43,7 +43,7 @@ public class PayrollDynamo extends BaseEntity {
     private String status;
     
     @DynamoDBAttribute
-    private String employeeId;
+    private String employeeCode;
 
     public PayrollDynamo() {
         super();
@@ -90,6 +90,6 @@ public class PayrollDynamo extends BaseEntity {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public String getEmployeeId() { return employeeId; }
-    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+    public String getEmployeeCode() { return employeeCode; }
+    public void setEmployeeCode(String employeeCode) { this.employeeCode = employeeCode; }
 }
