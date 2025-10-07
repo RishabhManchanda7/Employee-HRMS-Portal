@@ -3,6 +3,7 @@ package com.example.hrms.entity.dynamo;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @DynamoDBTable(tableName = "attendances")
@@ -18,6 +19,7 @@ public class AttendanceDynamo extends BaseEntity {
     private String status; // "P", "A", "L"
     
     @DynamoDBAttribute
+    @JsonAlias("employeeId")
     private String employeeCode;
 
     public AttendanceDynamo() {

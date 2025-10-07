@@ -33,8 +33,13 @@ public class AttendanceDynamoService implements AttendanceService {
 
     @Override
     public AttendanceDynamo create(AttendanceDynamo attendance) {
+        // Ensure employeeCode is set
+        if (attendance.getEmployeeCode() == null || attendance.getEmployeeCode().isEmpty()) {
+            throw new RuntimeException("Employee code is required");
+        }
+        
         if (attendance.getId() == null || attendance.getId().isEmpty()) {
-            attendance.setId(attendance.getEmployeeCode() + "-" + attendance.getDate());
+            attendance.setId(attendance.generateHashId(attendance.getEmployeeCode() + "-" + attendance.getDate()));
         }
         attendance.setTimestamps();
         return attendanceRepo.save(attendance);
@@ -45,8 +50,13 @@ public class AttendanceDynamoService implements AttendanceService {
         List<AttendanceDynamo> saved = new ArrayList<>();
         if (records == null) return saved;
         for (AttendanceDynamo r : records) {
+            // Ensure employeeCode is set
+            if (r.getEmployeeCode() == null || r.getEmployeeCode().isEmpty()) {
+                throw new RuntimeException("Employee code is required for all records");
+            }
+            
             if (r.getId() == null || r.getId().isEmpty()) {
-                r.setId(r.getEmployeeCode() + "-" + r.getDate());
+                r.setId(r.generateHashId(r.getEmployeeCode() + "-" + r.getDate()));
             }
             r.setTimestamps();
             saved.add(attendanceRepo.save(r));

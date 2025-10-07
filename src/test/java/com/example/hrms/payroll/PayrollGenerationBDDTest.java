@@ -44,7 +44,7 @@ class PayrollGenerationBDDTest {
             @BeforeEach
             void whenPayrollGenerated() {
                 payroll = new PayrollDynamo("PAY-EMP001-2024-01");
-                payroll.setEmployeeId("EMP001");
+                payroll.setEmployeeCode("EMP001");
                 payroll.setPayPeriod("2024-01");
                 payroll.setBaseSalary(new BigDecimal("50000"));
                 payroll.setOvertimePay(new BigDecimal("5000"));
@@ -60,7 +60,7 @@ class PayrollGenerationBDDTest {
             void thenPayrollShouldBeCreated() {
                 assertNotNull(payroll);
                 assertEquals("PAY-EMP001-2024-01", payroll.getPayrollCode());
-                assertEquals("EMP001", payroll.getEmployeeId());
+                assertEquals("EMP001", payroll.getEmployeeCode());
                 assertEquals("GENERATED", payroll.getStatus());
                 // ID should be hash-based, not the payroll code
                 assertNotNull(payroll.getId());
@@ -114,7 +114,7 @@ class PayrollGenerationBDDTest {
                 List<PayrollDynamo> payrolls = employees.stream()
                     .map(emp -> {
                         PayrollDynamo p = new PayrollDynamo("PAY-" + emp.getEmployeeCode() + "-2024-01");
-                        p.setEmployeeId(emp.getEmployeeCode());
+                        p.setEmployeeCode(emp.getEmployeeCode());
                         p.setBaseSalary(emp.getSalary());
                         p.setStatus("GENERATED");
                         return p;
