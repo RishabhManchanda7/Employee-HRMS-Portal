@@ -86,20 +86,7 @@ public class SalaryController {
         }
     }
     
-    /**
-     * Update payroll record status
-     */
-    @PutMapping("/payroll/{payrollCode}/status")
-    public ResponseEntity<PayrollDynamo> updatePayrollStatus(
-            @PathVariable String payrollCode, 
-            @RequestBody UpdateStatusRequest request) {
-        try {
-            PayrollDynamo payroll = salaryService.updatePayrollStatus(payrollCode, request.getStatus());
-            return ResponseEntity.ok(payroll);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+
     
     /**
      * Get payroll history for an employee
@@ -114,18 +101,7 @@ public class SalaryController {
         }
     }
     
-    /**
-     * Get department salary statistics
-     */
-    @GetMapping("/department/{departmentId}/stats")
-    public ResponseEntity<SalaryComputationService.DepartmentSalaryStats> getDepartmentSalaryStats(@PathVariable String departmentId) {
-        try {
-            SalaryComputationService.DepartmentSalaryStats stats = salaryService.getDepartmentSalaryStats(departmentId);
-            return ResponseEntity.ok(stats);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+
     
     /**
      * Request DTO for creating payroll records

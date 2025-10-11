@@ -13,6 +13,7 @@ public interface LeaveService {
     List<LeaveRequestDynamo> getByStatus(LeaveStatus status);
     LeaveRequestDynamo updateStatus(String leaveRequestCode, LeaveStatus status, String reason);
     LeaveRequestDynamo updateStatusById(String id, LeaveStatus status, String reason);
+    void delete(String id);
 }
 
 

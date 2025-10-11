@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class LeaveRequestDynamo extends BaseEntity {
 
     @DynamoDBHashKey
-    @JsonIgnore
     private String id;
 
     public LeaveRequestDynamo() {
@@ -27,7 +26,9 @@ public class LeaveRequestDynamo extends BaseEntity {
     @DynamoDBAttribute
     private String leaveRequestCode; 
     @DynamoDBAttribute
-    private String employeeCode;
+    private String employeeId;  // Hash ID
+    @DynamoDBAttribute
+    private String employeeCode; // Readable code like EMP001
 
     @DynamoDBAttribute
     private String startDate; 
@@ -47,7 +48,6 @@ public class LeaveRequestDynamo extends BaseEntity {
     private LeaveStatus status;
 
 
-    @JsonIgnore
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -57,11 +57,11 @@ public class LeaveRequestDynamo extends BaseEntity {
         this.setId(generateHashId(leaveRequestCode));
     }
 
+    public String getEmployeeId() { return employeeId; }
+    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+
     public String getEmployeeCode() { return employeeCode; }
     public void setEmployeeCode(String employeeCode) { this.employeeCode = employeeCode; }
-    
-    // Handle legacy employeeId field from JSON
-    public void setEmployeeId(String employeeId) { this.employeeCode = employeeId; }
 
     public String getStartDate() { return startDate; }
     public void setStartDate(String startDate) { this.startDate = startDate; }

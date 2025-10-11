@@ -3,6 +3,7 @@ package com.example.hrms.controller;
 import com.example.hrms.entity.dynamo.LeaveRequestDynamo;
 import com.example.hrms.entity.dynamo.LeaveStatus;
 import com.example.hrms.service.LeaveService;
+import com.example.hrms.service.EmployeeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,19 +15,31 @@ import java.util.List;
 public class LeaveController {
 
     private final LeaveService service;
+    private final EmployeeService employeeService;
 
-    public LeaveController(LeaveService service) {
+    public LeaveController(LeaveService service, EmployeeService employeeService) {
         this.service = service;
+        this.employeeService = employeeService;
     }
 
     @PostMapping
-    public LeaveRequestDynamo create(@RequestBody LeaveRequestDynamo req) {
-        return service.create(req);
+    public ResponseEntity<?> create(@RequestBody LeaveRequestDynamo req) {
+        // Validate employee exists
+        if (req.getEmployeeCode() == null || employeeService.findByEmployeeCode(req.getEmployeeCode()) == null) {
+            return ResponseEntity.badRequest().body("Employee with code '" + req.getEmployeeCode() + "' does not exist");
+        }
+        return ResponseEntity.ok(service.create(req));
     }
 
     @PostMapping("/bulk")
-    public List<LeaveRequestDynamo> createBulk(@RequestBody List<LeaveRequestDynamo> list) {
-        return service.createBulk(list);
+    public ResponseEntity<?> createBulk(@RequestBody List<LeaveRequestDynamo> list) {
+        // Validate all employees exist
+        for (LeaveRequestDynamo req : list) {
+            if (req.getEmployeeCode() == null || employeeService.findByEmployeeCode(req.getEmployeeCode()) == null) {
+                return ResponseEntity.badRequest().body("Employee with code '" + req.getEmployeeCode() + "' does not exist");
+            }
+        }
+        return ResponseEntity.ok(service.createBulk(list));
     }
 
     @GetMapping("/{id}")
@@ -59,6 +72,12 @@ public class LeaveController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     public static class StatusUpdateBody {

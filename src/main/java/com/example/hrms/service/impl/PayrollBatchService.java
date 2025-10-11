@@ -68,6 +68,12 @@ public class PayrollBatchService {
     public void clear() {
         queue.clear();
     }
+
+    public PayrollDynamo updateStatus(String payrollCode, String status) {
+        // This is a simple implementation - you may need to add actual database update logic
+        // For now, returning null to indicate "not found" until proper repository is implemented
+        return null;
+    }
 }
 
 

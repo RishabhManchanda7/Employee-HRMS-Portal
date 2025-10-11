@@ -120,6 +120,11 @@ public class LeaveDynamoService implements LeaveService {
         leave.setTimestamps();
         return repo.save(leave);
     }
+
+    @Override
+    public void delete(String id) {
+        repo.deleteById(id);
+    }
 }
 
 

@@ -124,12 +124,11 @@ public class SalaryComputationService {
      * Update payroll record status
      */
     public PayrollDynamo updatePayrollStatus(String payrollCode, String status) {
-        Optional<PayrollDynamo> payrollOpt = payrollRepository.findById(payrollCode);
-        if (!payrollOpt.isPresent()) {
+        PayrollDynamo payroll = payrollRepository.findByPayrollCode(payrollCode);
+        if (payroll == null) {
             throw new RuntimeException("Payroll record not found with code: " + payrollCode);
         }
         
-        PayrollDynamo payroll = payrollOpt.get();
         payroll.setStatus(status);
         payroll.setTimestamps();
         return payrollRepository.save(payroll);
@@ -139,13 +138,7 @@ public class SalaryComputationService {
      * Get payroll history for an employee
      */
     public List<PayrollDynamo> getEmployeePayrollHistory(String employeeCode) {
-        Optional<EmployeeDynamo> employeeOpt = employeeRepository.findByEmployeeCode(employeeCode);
-        if (!employeeOpt.isPresent()) {
-            throw new RuntimeException("Employee not found with code: " + employeeCode);
-        }
-        
-        EmployeeDynamo employee = employeeOpt.get();
-        return payrollRepository.findByEmployeeCode(employee.getEmployeeCode());
+        return payrollRepository.findByEmployeeCode(employeeCode);
     }
     
     /**
@@ -179,9 +172,7 @@ public class SalaryComputationService {
         List<PayrollDynamo> payrolls = payrollRepository.findByEmployeeCode(employee.getEmployeeCode());
         if (!payrolls.isEmpty()) {
             // Get the most recent payroll record
-            PayrollDynamo latestPayroll = payrolls.stream()
-                    .max((p1, p2) -> p1.getCreatedAt().compareTo(p2.getCreatedAt()))
-                    .orElse(null);
+            PayrollDynamo latestPayroll = payrolls.get(0);
             
             if (latestPayroll != null) {
                 summary.setPayrollCode(latestPayroll.getPayrollCode());
@@ -199,112 +190,5 @@ public class SalaryComputationService {
         summary.calculateTotals();
         
         return summary;
-    }
-    
-    /**
-     * Calculate department salary statistics
-     */
-    public DepartmentSalaryStats getDepartmentSalaryStats(String departmentId) {
-        List<EmployeeSalarySummary> summaries = getDepartmentSalarySummaries(departmentId);
-        
-        if (summaries.isEmpty()) {
-            return new DepartmentSalaryStats();
-        }
-        
-        BigDecimal totalSalary = BigDecimal.ZERO;
-        BigDecimal totalOvertime = BigDecimal.ZERO;
-        BigDecimal totalBonuses = BigDecimal.ZERO;
-        BigDecimal totalDeductions = BigDecimal.ZERO;
-        BigDecimal totalNetPay = BigDecimal.ZERO;
-        
-        for (EmployeeSalarySummary summary : summaries) {
-            if (summary.getBaseSalary() != null) totalSalary = totalSalary.add(summary.getBaseSalary());
-            if (summary.getOvertimePay() != null) totalOvertime = totalOvertime.add(summary.getOvertimePay());
-            if (summary.getBonuses() != null) totalBonuses = totalBonuses.add(summary.getBonuses());
-            if (summary.getDeductions() != null) totalDeductions = totalDeductions.add(summary.getDeductions());
-            if (summary.getNetPay() != null) totalNetPay = totalNetPay.add(summary.getNetPay());
-        }
-        
-        int employeeCount = summaries.size();
-        BigDecimal avgSalary = totalSalary.divide(BigDecimal.valueOf(employeeCount), 2, BigDecimal.ROUND_HALF_UP);
-        BigDecimal avgNetPay = totalNetPay.divide(BigDecimal.valueOf(employeeCount), 2, BigDecimal.ROUND_HALF_UP);
-        
-        return new DepartmentSalaryStats(
-            departmentId,
-            summaries.get(0).getDepartmentName(),
-            employeeCount,
-            totalSalary,
-            totalOvertime,
-            totalBonuses,
-            totalDeductions,
-            totalNetPay,
-            avgSalary,
-            avgNetPay
-        );
-    }
-    
-    /**
-     * Inner class for department salary statistics
-     */
-    public static class DepartmentSalaryStats {
-        private String departmentId;
-        private String departmentName;
-        private int employeeCount;
-        private BigDecimal totalSalary;
-        private BigDecimal totalOvertime;
-        private BigDecimal totalBonuses;
-        private BigDecimal totalDeductions;
-        private BigDecimal totalNetPay;
-        private BigDecimal avgSalary;
-        private BigDecimal avgNetPay;
-        
-        public DepartmentSalaryStats() {}
-        
-        public DepartmentSalaryStats(String departmentId, String departmentName, int employeeCount,
-                                   BigDecimal totalSalary, BigDecimal totalOvertime, BigDecimal totalBonuses,
-                                   BigDecimal totalDeductions, BigDecimal totalNetPay,
-                                   BigDecimal avgSalary, BigDecimal avgNetPay) {
-            this.departmentId = departmentId;
-            this.departmentName = departmentName;
-            this.employeeCount = employeeCount;
-            this.totalSalary = totalSalary;
-            this.totalOvertime = totalOvertime;
-            this.totalBonuses = totalBonuses;
-            this.totalDeductions = totalDeductions;
-            this.totalNetPay = totalNetPay;
-            this.avgSalary = avgSalary;
-            this.avgNetPay = avgNetPay;
-        }
-        
-        // Getters and setters
-        public String getDepartmentId() { return departmentId; }
-        public void setDepartmentId(String departmentId) { this.departmentId = departmentId; }
-        
-        public String getDepartmentName() { return departmentName; }
-        public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
-        
-        public int getEmployeeCount() { return employeeCount; }
-        public void setEmployeeCount(int employeeCount) { this.employeeCount = employeeCount; }
-        
-        public BigDecimal getTotalSalary() { return totalSalary; }
-        public void setTotalSalary(BigDecimal totalSalary) { this.totalSalary = totalSalary; }
-        
-        public BigDecimal getTotalOvertime() { return totalOvertime; }
-        public void setTotalOvertime(BigDecimal totalOvertime) { this.totalOvertime = totalOvertime; }
-        
-        public BigDecimal getTotalBonuses() { return totalBonuses; }
-        public void setTotalBonuses(BigDecimal totalBonuses) { this.totalBonuses = totalBonuses; }
-        
-        public BigDecimal getTotalDeductions() { return totalDeductions; }
-        public void setTotalDeductions(BigDecimal totalDeductions) { this.totalDeductions = totalDeductions; }
-        
-        public BigDecimal getTotalNetPay() { return totalNetPay; }
-        public void setTotalNetPay(BigDecimal totalNetPay) { this.totalNetPay = totalNetPay; }
-        
-        public BigDecimal getAvgSalary() { return avgSalary; }
-        public void setAvgSalary(BigDecimal avgSalary) { this.avgSalary = avgSalary; }
-        
-        public BigDecimal getAvgNetPay() { return avgNetPay; }
-        public void setAvgNetPay(BigDecimal avgNetPay) { this.avgNetPay = avgNetPay; }
     }
 }
